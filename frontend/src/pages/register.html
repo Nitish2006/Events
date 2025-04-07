@@ -79,7 +79,7 @@
             <button type="submit" class="submit-btn w-full py-2">Register Now</button>
         </form>
         <p class="text-center mt-3 text-sm">
-            <a href="login.html" class="text-primary-blue hover:underline">Already have an account? Login</a>
+            <a href="/login.html" class="text-primary-blue hover:underline">Already have an account? Login</a>
         </p>
     </div>
     <div class="toggle-slider" id="theme-toggle"></div>
@@ -94,14 +94,13 @@
                 year: document.getElementById('year').value
             };
 
-            // Basic client-side validation
             if (!userData.username || !userData.password || !userData.regid || !userData.branch || !userData.year) {
                 alert('All fields are required!');
                 return;
             }
 
             try {
-                const response = await fetch('http://localhost:3000/api/auth/register', { // Update with your backend URL
+                const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,13 +112,13 @@
 
                 if (response.ok) {
                     alert('Registration successful! Please login.');
-                    window.location.href = 'login.html';
+                    window.location.href = '/login.html';
                 } else {
                     alert(result.message || 'Registration failed. Please try again.');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while registering. Please try again later.');
+                console.error('Registration error:', error);
+                alert('An error occurred: ' + error.message);
             }
         });
 
