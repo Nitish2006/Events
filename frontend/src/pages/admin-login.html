@@ -49,16 +49,35 @@
     </div>
     <div class="toggle-slider" id="theme-toggle"></div>
     <script>
-        const adminCredentials = { username: 'admin', password: 'admin123' };
-        document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            if (username === adminCredentials.username && password === adminCredentials.password) {
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = 'admin.html';
-            } else document.getElementById('error-message').style.display = 'block';
+
+            try {
+                const response = await fetch('/api/auth/admin-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('authToken', result.token); // Store the token
+                    window.location.href = '/admin.html';
+                } else {
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
+                document.getElementById('error-message').style.display = 'block';
+            }
         });
+
         const toggle = document.getElementById('theme-toggle');
         toggle.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
